@@ -1,0 +1,8 @@
+{
+    "name": "sample-mbot-package",
+    "author": "Franklin Volcic",
+    "version": "1.0.0",
+    "description": "hello there. This is a sample description",
+    "html_file": "index.html",
+    "uuid": "8f209db77a1208a0b120413faf381aea7b7d69f3030ab7cb3a48e31ffe657150"
+}

@@ -41,6 +41,7 @@ export default props => {
                 onClick={() => {
                     console.log(pkg.name);
                     props.setPackageURL("http://localhost:8080" + pkg.URI);
+                    console.log("http://localhost:8080" + pkg.URI);
                     document.getElementById("react-burger-menu-btn").click();
                 }}
                 style={{cursor: 'pointer'}}

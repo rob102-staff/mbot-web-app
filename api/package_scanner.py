@@ -14,6 +14,7 @@ class Package:
         self.author = self.metadata["author"]
         self.description = self.metadata["description"]
         self.version = self.metadata["version"]
+        self.name = self.metadata["name"]
         self.html_file = self.metadata["html_file"]
         self.h = self._hash()
 
