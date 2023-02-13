@@ -1,3 +1,18 @@
+
+# Problem
+
+## Background 
+
+This project is part of a larger project that aims to simplify robotics by making it simple and open source. One part of 
+this open source initiative is making a web application that runs on the robot locally and allows you to visualize a number
+of different things.
+
+## Problem statement
+
+The current web application is heavy and not easily modifiable. This makes the web application highly use case specific. 
+To improve the speed and ease which new robotics coursework material is developed, we are developing a new web application
+that is modular using a plugin system that makes it easy to extend the web application to fit your needs. 
+
 # System outline
 
 ## Introduction
