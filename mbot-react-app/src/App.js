@@ -5,13 +5,13 @@ import { useState } from 'react';
 
 function App() {
 
-  const [packageURL, setPackageURL] = useState('');
+  const [packageURL, setPackageURL] = useState('http://localhost:8080/packages/default/index.html');
   
   return (
     <div className="App" id="outer-container" style={{width:"100%", height: "100vh  "}}>
       <Sidebar pageWrapId={'page-wrap'} outerContainerId={'outer-container'} setPackageURL={setPackageURL} />
-      <div id="page-wrap" style={{width:"100%", height: "100%"}}>
-        <iframe src={packageURL} style={{ width: "100%", height: "100%"}}></iframe>
+      <div id="page-wrap" style={{width:"100%", height: "100%", padding: "0px"}}>
+      <iframe src={packageURL} style={{ width: "100%", height: "100%", border: "0px"}}></iframe>
       </div>
     </div>
   );
