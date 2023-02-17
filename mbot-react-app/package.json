@@ -18,6 +18,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "homepage": "./app-skeleton",
   "eslintConfig": {
     "extends": [
       "react-app",

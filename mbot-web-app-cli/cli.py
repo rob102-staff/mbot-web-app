@@ -348,5 +348,29 @@ def shake_unusable():
 
     typer.echo(f"{colorama.Fore.GREEN}{colorama.Style.BRIGHT}Done!{colorama.Style.RESET_ALL}")
 
+@app.command()
+def add_remote_package(url, from_git=False):
+    """
+    Add a remote package to the packages directory.
+    If the package is from git, it will be cloned. Otherwise, a remote package will be created.
+    """
+
+    if from_git:
+        install_package_from_git(url)
+    else:
+        install_package_from_url(url)
+
+def install_package_from_git(url):
+    """Clone the git repo into /data/mbot/tmp/ and then run the install command"""
+
+    # clone the repo
+    
+    pass
+
+
+
+def install_package_from_url(url):
+    pass
+
 if __name__ == "__main__":
     app()

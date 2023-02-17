@@ -3,20 +3,23 @@ import { slide as Menu } from 'react-burger-menu';
 import { useEffect, useState } from 'react';
 import './sidebar.css';
 
+function getPackages(setPackages) {
+    fetch('http://localhost:8080/api/packages/list')
+        .then(res => res.json())
+        .then(data => {
+            setPackages(data.packages);
+        }).catch(err => {
+            console.log(err);
+        });
+}
+
 export default props => {
 
     const [packages, setPackages] = useState([]);
 
     // use the effect hook to get data from the /api/packages/list endpoint
     useEffect(() => {
-        fetch('http://localhost:8080/api/packages/list')
-            .then(res => res.json())
-            .then(data => {
-                console.log(data.packages);
-                setPackages(data.packages);
-            }).catch(err => {
-                console.log(err);
-            });
+        getPackages(setPackages);
     }, []);
 
     if (packages === undefined) {
@@ -24,7 +27,7 @@ export default props => {
     }
 
     return (
-        <Menu>
+        <Menu onStateChange={() => {getPackages(setPackages);}}>
             <h2 className="menu-item" style={{cursor: 'pointer'}}
                 onMouseOver={e => e.target.style.color = 'brown'}
                 onMouseOut={e => e.target.style.color = 'white'}

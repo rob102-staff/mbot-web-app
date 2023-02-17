@@ -65,8 +65,9 @@
     background: rgba(0, 0, 0, 0.3);
   }
 
-/* style all text with class=menu-item white with no underline */
+/* style all text with class=menu-item white with no underline.  */
 .menu-item {
   color: white;
   text-decoration: none;
+  text-align: left;
 }
