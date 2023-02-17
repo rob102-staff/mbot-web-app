@@ -17,6 +17,7 @@ class Package:
         self.name = self.metadata["name"]
         self.html_file = self.metadata["html_file"]
         self.h = self._hash()
+        self.hidden = self.metadata["hidden"]
 
     def as_dict(self):
         return {
@@ -27,6 +28,7 @@ class Package:
             "html_file": self.html_file,
             "uuid": self.h,
             "URI": "/packages/" + self.h + "/" + self.html_file,
+            "hidden": self.hidden
         }
 
     def full_path(self):
@@ -101,6 +103,9 @@ class Package:
         elif "entry" in self.metadata and "html_file" not in self.metadata:
             self.metadata["html_file"] = self.metadata["entry"]
     
+        if "hidden" not in self.metadata:
+            self.metadata["hidden"] = False
+
 def load_packages(path: str = DEFAULT_PACKAGE_PATH):
     return _load_packages(path)
 

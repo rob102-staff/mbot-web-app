@@ -1,5 +1,4 @@
-
-.settings { 
+.settings {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -16,7 +15,7 @@
     box-shadow: inset;
     border-radius: 10px;
     background-color: rgb(255, 255, 255);
-    display: flex; 
+    display: flex;
     flex-direction: column;
     align-items: center;
 }
@@ -54,11 +53,11 @@
     filter: drop-shadow(0 0 0.2rem rgb(0, 0, 0, 0.2));
 }
 
-.pkg-meta-text { 
+.pkg-meta-text {
     font-size: 1rem;
     font-weight: 400;
     margin: 0;
-    padding: 2px; 
+    padding: 2px;
 }
 
 .pkg-meta-section {
@@ -80,38 +79,55 @@
 
 /* CSS */
 .pkg-action-btn {
-  background: #FF4742;
-  border: 1px solid #FF4742;
-  border-radius: 6px;
-  box-shadow: rgba(0, 0, 0, 0.1) 1px 2px 4px;
-  box-sizing: border-box;
-  color: #FFFFFF;
-  cursor: pointer;
-  display: inline-block;
-  font-family: nunito,roboto,proxima-nova,"proxima nova",sans-serif;
-  font-size: 16px;
-  font-weight: 800;
-  line-height: 16px;
-  min-height: 40px;
-  outline: 0;
-  padding: 12px 14px;
-  text-align: center;
-  text-rendering: geometricprecision;
-  text-transform: none;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  vertical-align: middle;
+    background: #FF4742;
+    border: 1px solid #FF4742;
+    border-radius: 6px;
+    box-shadow: rgba(0, 0, 0, 0.1) 1px 2px 4px;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: inline-block;
+    font-family: nunito, roboto, proxima-nova, "proxima nova", sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 16px;
+    min-height: 40px;
+    outline: 0;
+    padding: 12px 14px;
+    text-align: center;
+    text-rendering: geometricprecision;
+    text-transform: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: middle;
 }
 
 .pkg-action-btn:hover,
 .pkg-action-btn:active {
-  background-color: initial;
-  background-position: 0 0;
-  color: #FF4742;
-  background: #FFFFFF;
+    background-color: initial;
+    background-position: 0 0;
+    color: #FF4742;
+    background: #FFFFFF;
 }
 
 .pkg-action-btn:active {
-  opacity: .5;
+    opacity: .5;
+}
+
+.uninstall-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: auto;
+    padding: 0 20px;
+}
+
+.uninstall-prompt-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }

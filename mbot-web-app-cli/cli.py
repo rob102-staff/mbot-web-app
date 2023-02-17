@@ -23,10 +23,11 @@ class Package:
         self.author = self.metadata["author"]
         self.description = self.metadata["description"]
         self.version = self.metadata["version"]
-        self.html_file = self.metadata["html_file"]
         self.name = self.metadata["name"]
+        self.html_file = self.metadata["html_file"]
         self.h = self._hash()
         self.uuid = self.h
+        self.hidden = self.metadata["hidden"]
 
     def as_dict(self):
         return {
@@ -37,6 +38,7 @@ class Package:
             "html_file": self.html_file,
             "uuid": self.h,
             "URI": "/packages/" + self.h + "/" + self.html_file,
+            "hidden": self.hidden
         }
 
     def full_path(self):
@@ -83,7 +85,10 @@ class Package:
             #read the metadata file
             with open(self.path + "/metadata.json", "r") as f:
                 self.metadata = json.load(f)
-                
+        
+        print("read metadata for " + self.name)
+        print(self.metadata)
+        
         self._validate_metadata() 
     
     def _validate_metadata(self):
@@ -108,10 +113,16 @@ class Package:
         elif "entry" in self.metadata and "html_file" not in self.metadata:
             self.metadata["html_file"] = self.metadata["entry"]
     
+        if "hidden" not in self.metadata:
+            self.metadata["hidden"] = False
+
 def load_packages(path: str = DEFAULT_PACKAGE_PATH):
     return _load_packages(path)
 
 def _load_packages(path: str):
+
+    print("Loading packages from " + path)
+    print("there are " + str(len(os.listdir(path))) + " packages in the folder")
 
     packages = []
 
@@ -122,14 +133,16 @@ def _load_packages(path: str):
 
         # skip if not a folder
         if not os.path.isdir(path + "/" + folder):
+            print("skipping " + folder + " because it is not a folder")
             continue
 
         package = Package(path + "/" + folder)
         if package.is_valid():
             packages.append(package)
+        else:
+            print("skipping " + folder + " because it is not valid")
 
     return packages 
-
 
 
 # list packages, install package, uninstall package, fix packages, generate metadata
@@ -153,6 +166,7 @@ def listall():
         typer.echo(f"\tEntry HTML File: {package.html_file}")
         typer.echo(f"\tPath: {package.path}")
         typer.echo(f"\tUUID: {package.uuid}")
+        typer.echo(f"\tHidden: {package.hidden}")
         typer.echo("\n")
 
 def generate_uuid(name, author, version, description, html_file):
