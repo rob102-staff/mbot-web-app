@@ -39,6 +39,9 @@ export default props => {
                 MBot home
             </h2>
             {packages.map((pkg, index) => {
+                if (pkg.uuid === "default") {
+                    return null;
+                }
                 return <h2 className="menu-item" 
                 key={index}
                 onClick={() => {
