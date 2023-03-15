@@ -6,11 +6,14 @@ import hashlib
 import json
 import os
 import shutil
+import git
 
 app = typer.Typer()
 
 DEFAULT_PACKAGE_PATH = "/data/www/mbot/packages"
 DEFAULT_INSTALL_PATH = "/data/www/mbot/packages"
+GIT_CLONE_PATH = "/data/www/mbot/git/tmp"
+CURRENT_EXECUTION_PATH = os.getcwd()
 
 class Package:
 
@@ -85,10 +88,7 @@ class Package:
             #read the metadata file
             with open(self.path + "/metadata.json", "r") as f:
                 self.metadata = json.load(f)
-        
-        print("read metadata for " + self.name)
-        print(self.metadata)
-        
+                
         self._validate_metadata() 
     
     def _validate_metadata(self):
@@ -120,9 +120,6 @@ def load_packages(path: str = DEFAULT_PACKAGE_PATH):
     return _load_packages(path)
 
 def _load_packages(path: str):
-
-    print("Loading packages from " + path)
-    print("there are " + str(len(os.listdir(path))) + " packages in the folder")
 
     packages = []
 
@@ -199,18 +196,20 @@ def validate_metadata(metadata):
 
     return True
 
-def check_for_metadata():
+def check_for_metadata(path: str = CURRENT_EXECUTION_PATH):
     # check if the current directory has a metadata.json file
     # return True if it does, False if not
 
-    return os.path.exists("metadata.json")
+    return os.path.exists(path + "/metadata.json")
 
-@app.command()
-def generate_metadata():
+def check_for_file(filename: str, path: str = CURRENT_EXECUTION_PATH):
+    # check if the current directory has a metadata.json file
+    # return True if it does, False if not
+
+    return os.path.exists(f"{path}/{filename}")
+
+def generate_metadata_at(path: str = CURRENT_EXECUTION_PATH):
     """Generate a metadata file for your package."""
-    # package name, author, version, description, entry html file
-    # ask for each of these, then write to metadata.json
-    
     typer.echo(f"{colorama.Style.BRIGHT}Welcome to the metadata generator!{colorama.Style.RESET_ALL}")
     typer.echo("Let's get started by generating a metadata file for your package.")
     typer.echo("You can always edit this file later, but it's best to get it right the first time.")
@@ -235,21 +234,29 @@ def generate_metadata():
     typer.echo(metadata)
 
     typer.echo(f"\n{colorama.Fore.GREEN}Writing metadata to metadata.json...{colorama.Style.RESET_ALL}")
-    with open("metadata.json", "w") as f:
+    with open(path + "/metadata.json", "w") as f:
         json.dump(metadata, f, indent=4)
     
     typer.echo(f"{colorama.Fore.GREEN}Done!{colorama.Style.RESET_ALL}")
 
 @app.command()
-def update_uuid():
+def generate_metadata(path: str = CURRENT_EXECUTION_PATH):
+    """Generate a metadata file for your package."""
+    # package name, author, version, description, entry html file
+    # ask for each of these, then write to metadata.json
+    generate_metadata_at(path)
+    
+
+@app.command()
+def update_uuid(path: str = CURRENT_EXECUTION_PATH):
     """check for metadata.json, then update the UUID"""
-    if not check_for_metadata():
+    if not check_for_metadata(path):
         typer.echo(f"{colorama.Fore.RED}metadata.json not found!{colorama.Style.RESET_ALL}")
         typer.echo("Please run 'generate-metadata' in your package directory first.")
         return
 
     typer.echo(f"{colorama.Fore.GREEN}Updating UUID...{colorama.Style.RESET_ALL}")
-    with open("metadata.json", "r") as f:
+    with open(path + "/metadata.json", "r") as f:
         metadata = json.load(f)
     
     if not validate_metadata(metadata):
@@ -259,21 +266,20 @@ def update_uuid():
 
     metadata["uuid"] = generate_uuid(metadata["name"], metadata["author"], metadata["version"], metadata["description"], metadata["html_file"])
 
-    with open("metadata.json", "w") as f:
+    with open(path + "/metadata.json", "w") as f:
         json.dump(metadata, f, indent=4)
     
     typer.echo(f"{colorama.Fore.GREEN}Done!{colorama.Style.RESET_ALL}")
 
-@app.command()
-def install():
-    """check for metadata.json, then copy to packages directory"""
-    if not check_for_metadata():
+def install_pkg(path: str = CURRENT_EXECUTION_PATH):
+    """Install a package that is located at the current path."""
+    if not check_for_metadata(path):
         typer.echo(f"{colorama.Fore.RED}metadata.json not found!{colorama.Style.RESET_ALL}")
         typer.echo("Please run 'generate-metadata' in your package directory first.")
         return
     
     metadata = None
-    with open("metadata.json", "r") as f:
+    with open(path + "/metadata.json", "r") as f:
         metadata = json.load(f)
     
     if not validate_metadata(metadata):
@@ -298,14 +304,19 @@ def install():
     os.mkdir(os.path.join(DEFAULT_INSTALL_PATH, metadata["uuid"]))
 
     # Copy all the files in the current directory to the new folder
-    for file in os.listdir("."):
+    for file in os.listdir(path):
         # copy all files and folders
-        if os.path.isdir(file):
-            shutil.copytree(file, os.path.join(DEFAULT_INSTALL_PATH, metadata["uuid"], file))
+        if os.path.isdir(f"{path}/{file}"):
+            shutil.copytree(f"{path}/{file}", os.path.join(DEFAULT_INSTALL_PATH, metadata["uuid"], file))
         else:
-            shutil.copy(file, os.path.join(DEFAULT_INSTALL_PATH, metadata["uuid"], file))
+            shutil.copy(f"{path}/{file}", os.path.join(DEFAULT_INSTALL_PATH, metadata["uuid"], file))
 
     typer.echo(f"{colorama.Fore.GREEN}{colorama.Style.BRIGHT}Done!{colorama.Style.RESET_ALL}")
+
+@app.command()
+def install():
+    """check for metadata.json, then copy to packages directory"""
+    install_pkg() 
 
 @app.command()
 def uninstall(package_name: str):
@@ -363,24 +374,69 @@ def shake_unusable():
     typer.echo(f"{colorama.Fore.GREEN}{colorama.Style.BRIGHT}Done!{colorama.Style.RESET_ALL}")
 
 @app.command()
-def add_remote_package(url, from_git=False):
+def add_remote_package(url, from_git=True, branch="deploy"):
     """
     Add a remote package to the packages directory.
     If the package is from git, it will be cloned. Otherwise, a remote package will be created.
     """
 
     if from_git:
-        install_package_from_git(url)
+        install_package_from_git(url, branch=branch)
     else:
         install_package_from_url(url)
 
-def install_package_from_git(url):
+def install_package_from_git(url, branch="deploy"):
     """Clone the git repo into /data/mbot/tmp/ and then run the install command"""
 
-    # clone the repo
+    # First clear the tmp folder
+    if os.path.exists(os.path.join(GIT_CLONE_PATH)):
+        shutil.rmtree(os.path.join(GIT_CLONE_PATH))
     
-    pass
+    # create the tmp folder
+    os.makedirs(GIT_CLONE_PATH)
 
+    # clone the repo
+    try:
+        repo = git.Repo.clone_from(url, GIT_CLONE_PATH, branch=branch)
+    except Exception as e:
+        typer.echo(f"{colorama.Fore.RED}Error cloning the repo: {str(e)}{colorama.Style.RESET_ALL}")
+        return
+
+    has_metadata = check_for_metadata(GIT_CLONE_PATH)
+    has_index = check_for_file("index.html", GIT_CLONE_PATH)
+
+    if not has_metadata:
+        typer.echo(f"{colorama.Fore.RED}")
+        typer.echo("The repo does not contain a metadata.json file!")
+        typer.echo("This may indicate that the repo is not a valid package, or that you specified the wrong branch.")
+        
+        if has_index:
+            typer.echo() # newline
+            typer.echo("The repo does contain an index.html file, so it may be a useable package.")
+        if not has_index:
+            typer.echo()
+            typer.echo("The repo does not contain an index.html file, so it's unlikely to be a useable package.")
+        
+        generate = typer.confirm(f"{colorama.Style.BRIGHT}Would you like to attempt to generate a metadata to install the package?")   
+
+        if generate:
+            typer.echo(f"{colorama.Style.RESET_ALL}")
+            generate_metadata_at(GIT_CLONE_PATH)
+        else:
+            typer.echo(f"Exiting package installation{colorama.Style.RESET_ALL}")
+            shutil.rmtree(GIT_CLONE_PATH)
+            return
+
+    # remove the .git folder
+    shutil.rmtree(os.path.join(GIT_CLONE_PATH, ".git"))
+
+    # install the package
+    install_pkg(GIT_CLONE_PATH)
+
+    # delete the tmp folder
+    shutil.rmtree(GIT_CLONE_PATH)
+
+    typer.echo(f"{colorama.Fore.GREEN}{colorama.Style.BRIGHT}Package installed from git!{colorama.Style.RESET_ALL}")
 
 
 def install_package_from_url(url):
