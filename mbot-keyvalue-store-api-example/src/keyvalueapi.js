@@ -2,7 +2,7 @@
 This file defines the API for the key-value store.
 */
 
-const api_base = "http://localhost:8080/api"
+const api_base = "http://localhost/api"
 
 /**
  * Create a new key-value store that we can use to store data.

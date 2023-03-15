@@ -75,10 +75,7 @@ class Package:
             #read the metadata file
             with open(self.path + "/metadata.json", "r") as f:
                 self.metadata = json.load(f)
-        
-        print("read metadata for " + self.name)
-        print(self.metadata)
-        
+            
         self._validate_metadata() 
     
     def _validate_metadata(self):
@@ -111,9 +108,6 @@ def load_packages(path: str = DEFAULT_PACKAGE_PATH):
 
 def _load_packages(path: str):
 
-    print("Loading packages from " + path)
-    print("there are " + str(len(os.listdir(path))) + " packages in the folder")
-
     packages = []
 
     # load all folders in the path
@@ -123,14 +117,11 @@ def _load_packages(path: str):
 
         # skip if not a folder
         if not os.path.isdir(path + "/" + folder):
-            print("skipping " + folder + " because it is not a folder")
             continue
 
         package = Package(path + "/" + folder)
         if package.is_valid():
             packages.append(package)
-        else:
-            print("skipping " + folder + " because it is not valid")
 
     return packages 
 

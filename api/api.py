@@ -8,6 +8,7 @@ import subprocess
 import os
 
 import storage_api
+import package_utils
 
 app = Flask(__name__)
 CORS(app, support_credentials=True)
@@ -27,13 +28,31 @@ def uninstall_package():
     if not package_name:
         return {"success": False, "error": "Package name not provided"}
     
-    # uninstall the package
-    print(f"mbotter uninstall \"{package_name}\"")
-    output = subprocess.check_output(f"mbotter uninstall \"{package_name}\"", shell=True)
+    success = package_utils.remove_package(package_name)
 
-    if("not" in output.decode("utf-8")):
-        return {"success": False, "error": "Package not found"}
+    if not success:
+        return {"success": False, "error": "Package install failed."}
 
+    return {"success": True}
+
+@app.route('/packages/install', methods=['POST'])
+def install_package():
+    """Install a package"""
+
+    # get the package name from the request body
+    package_url = request.json.get("url")
+    
+    # get the branch, if it exists
+    branch = request.json.get("branch", "deploy")
+
+    if not package_url:
+        return {"success": False, "error": "Package url not provided"}
+
+    success, msg = package_utils.install_git_package(package_url, branch=branch, overwrite=False)
+
+    if success != 0:
+        return {"success": False, "error": "msg"}
+    
     return {"success": True}
 
 @app.route('/storage/keyvalue/<store>/', methods=['GET','POST'])

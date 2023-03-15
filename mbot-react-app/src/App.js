@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 function App() {
 
-  const [packageURL, setPackageURL] = useState('http://localhost:8080/packages/default/index.html');
+  const [packageURL, setPackageURL] = useState('http://localhost/packages/default/index.html');
   
   return (
     <div className="App" id="outer-container" style={{width:"100%", height: "100vh  "}}>

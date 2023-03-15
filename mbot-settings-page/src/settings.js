@@ -9,7 +9,7 @@ import 'reactjs-popup/dist/index.css';
 // A settings react component
 
 function uninstallPackage(name, onSuccess, onError) {
-    fetch('http://localhost:8080/api/packages/uninstall', {
+    fetch('http://localhost/api/packages/uninstall', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -36,6 +36,33 @@ function uninstallPackage(name, onSuccess, onError) {
         });
 }
 
+function installFromGit(url, onSuccess, onError) {
+    fetch('http://localhost/api/packages/install', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            url: url
+        })
+    }).then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Package installed successfully');
+                NotificationManager.success('Package installed successfully', 'Success');
+                onSuccess();
+            } else {
+                console.log('Package installation failed');
+                NotificationManager.error('Package installation failed', 'Error');
+                onError();
+            }
+
+        }).catch(err => {
+            console.log(err);
+            onError();
+        });
+}
+
 const UninstallPackageButton = (props) => {
     const [open, setOpen] = useState(false);
     const closeModal = () => setOpen(false);
@@ -47,21 +74,21 @@ const UninstallPackageButton = (props) => {
             <Popup open={open} closeOnDocumentClick onClose={closeModal}>
                 <div className="modal">
                     <h2 className='uninstall-prompt-title'>
-                    Are you use you want to uninstall the {props.name} package?
+                        Are you use you want to uninstall the {props.name} package?
                     </h2>
                     <div className="uninstall-buttons">
-                    <button className='pkg-action-btn' style={{margin: "2px"}} onClick={() => {closeModal(); props.uninstall();}}>Uninstall</button>
-                    <button className='pkg-action-btn' style={{margin: "2px"}} onClick={() => {closeModal()}}>Go Back</button>
+                        <button className='pkg-action-btn' style={{ margin: "2px" }} onClick={() => { closeModal(); props.uninstall(); }}>Uninstall</button>
+                        <button className='pkg-action-btn' style={{ margin: "2px" }} onClick={() => { closeModal() }}>Go Back</button>
+                    </div>
                 </div>
-                </div>
-                
+
             </Popup>
         </div>
     );
 };
 
 function fetchPackages(setPackages) {
-    fetch('http://localhost:8080/api/packages/list')
+    fetch('http://localhost/api/packages/list')
         .then(res => res.json())
         .then(data => {
             console.log(data.packages);
@@ -98,10 +125,25 @@ function Settings() {
                                 <p className="pkg-meta-text"><strong>UUID: </strong>{pkg.uuid}</p>
                             </div>
                             <div className="pkg-actions">
-                                <UninstallPackageButton name={pkg.name} uninstall={() => {uninstallPackage(pkg.name, () => { fetchPackages(setPackages) }, () => { })}} />
+                                <UninstallPackageButton name={pkg.name} uninstall={() => { uninstallPackage(pkg.name, () => { fetchPackages(setPackages) }, () => { }) }} />
                             </div>
                         </div>);
                     })}
+                </div>
+            </div>
+            <div>
+                <h2 className='pkg-install-header'>Package Installer</h2>
+                <div className="package-installer">
+                    <h3 className='pkg-install-header'>Install a package from git</h3>
+                    <input className="pkg-git-input" type="text" placeholder="Package Git URL" />
+                    <button type="button" 
+                    className="pkg-install-btn pkg-action-btn"
+                    onClick={() => {
+                        const url = document.querySelector('.pkg-git-input').value;
+                        installFromGit(url, () => { fetchPackages(setPackages) }, () => { });
+                    }
+                    }
+                    >Install</button>
                 </div>
             </div>
         </div>

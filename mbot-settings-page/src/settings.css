@@ -131,3 +131,34 @@
     align-items: center;
     justify-content: center;
 }
+
+.package-installer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: auto;
+}
+
+.pkg-install-btn{
+    padding-top: 10px;
+}
+
+.pkg-install-header{
+    padding: 5px; 
+    margin: 0px;
+}
+
+.pkg-git-input{
+    width: 100%;
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin: 5px;
+}
+
+input[type="text"]::placeholder {
+    text-align: center;
+}

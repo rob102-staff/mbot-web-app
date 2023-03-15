@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import './sidebar.css';
 
 function getPackages(setPackages) {
-    fetch('http://localhost:8080/api/packages/list')
+    fetch('http://localhost/api/packages/list')
         .then(res => res.json())
         .then(data => {
             setPackages(data.packages);
@@ -32,7 +32,7 @@ export default props => {
                 onMouseOver={e => e.target.style.color = 'brown'}
                 onMouseOut={e => e.target.style.color = 'white'}
                 onClick={() => {
-                    props.setPackageURL("http://localhost:8080/packages/default/index.html");
+                    props.setPackageURL("http://localhost/packages/default/index.html");
                     document.getElementById("react-burger-menu-btn").click();
                 }}
                 >
@@ -46,8 +46,8 @@ export default props => {
                 key={index}
                 onClick={() => {
                     console.log(pkg.name);
-                    props.setPackageURL("http://localhost:8080" + pkg.URI);
-                    console.log("http://localhost:8080" + pkg.URI);
+                    props.setPackageURL("http://localhost" + pkg.URI);
+                    console.log("http://localhost" + pkg.URI);
                     document.getElementById("react-burger-menu-btn").click();
                 }}
                 style={{cursor: 'pointer'}}
