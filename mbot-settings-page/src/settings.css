@@ -150,6 +150,13 @@
     margin: 0px;
 }
 
+.pkg-install-subheader{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center; 
+}
+
 .pkg-git-input{
     width: 100%;
     height: 30px;

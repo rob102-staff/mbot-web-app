@@ -5,7 +5,9 @@ import { NotificationContainer, NotificationManager } from 'react-notifications'
 import 'react-notifications/lib/notifications.css';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
-
+import LoadingSpinner from './loadingSpinner';
+import { Tooltip } from "@mui/material";
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 // A settings react component
 
 function uninstallPackage(name, onSuccess, onError) {
@@ -99,7 +101,9 @@ function fetchPackages(setPackages) {
 }
 
 function Settings() {
+
     const [packages, setPackages] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     // use the effect hook to get data from the /api/packages/list endpoint
     useEffect(() => {
@@ -110,7 +114,38 @@ function Settings() {
         <div className='settings'>
             <NotificationContainer />
             <h1>Settings</h1>
-
+            <div>
+                <h2 className='pkg-install-header'>Package Installer</h2>
+                <div className="package-installer">
+                    <div className="pkg-install-subheader">
+                        <p className='pkg-install-header'>Install a package from git</p>
+                        <Tooltip title="Some packages can be installed directly via their git link. If you have a git link, paste it below and click install.">
+                            <QuestionMarkIcon fontSize="100px" />
+                        </Tooltip>
+                    </div>
+                    <input className="pkg-git-input" type="text" placeholder="Package Git URL" />
+                    {
+                        !isLoading &&
+                        <button type="button"
+                            className="pkg-install-btn pkg-action-btn"
+                            onClick={() => {
+                                const url = document.querySelector('.pkg-git-input').value;
+                                setIsLoading(true);
+                                installFromGit(url, () => {
+                                    setIsLoading(false);
+                                    fetchPackages(setPackages)
+                                },
+                                    () => {
+                                        setIsLoading(false);
+                                    });
+                            }
+                            }
+                        >Install</button>}
+                    {isLoading &&
+                        <LoadingSpinner />
+                    }
+                </div>
+            </div>
             <div className="packages-settings">
                 <h2>Installed Packages</h2>
                 <div className="packages-list">
@@ -131,21 +166,7 @@ function Settings() {
                     })}
                 </div>
             </div>
-            <div>
-                <h2 className='pkg-install-header'>Package Installer</h2>
-                <div className="package-installer">
-                    <h3 className='pkg-install-header'>Install a package from git</h3>
-                    <input className="pkg-git-input" type="text" placeholder="Package Git URL" />
-                    <button type="button" 
-                    className="pkg-install-btn pkg-action-btn"
-                    onClick={() => {
-                        const url = document.querySelector('.pkg-git-input').value;
-                        installFromGit(url, () => { fetchPackages(setPackages) }, () => { });
-                    }
-                    }
-                    >Install</button>
-                </div>
-            </div>
+
         </div>
     );
 }

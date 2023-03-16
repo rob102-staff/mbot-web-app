@@ -1,11 +1,8 @@
 from flask import Flask
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 from flask import request
 
 from package_scanner import load_packages
-
-import subprocess
-import os
 
 import storage_api
 import package_utils
@@ -48,9 +45,11 @@ def install_package():
     if not package_url:
         return {"success": False, "error": "Package url not provided"}
 
-    success, msg = package_utils.install_git_package(package_url, branch=branch, overwrite=False)
+    success, msg = package_utils.install_git_package(package_url, branch=branch, overwrite=True)
 
-    if success != 0:
+    print(success, msg)
+
+    if not success:
         return {"success": False, "error": "msg"}
     
     return {"success": True}

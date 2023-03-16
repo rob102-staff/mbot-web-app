@@ -177,7 +177,7 @@ def check_for_file(filename: str, path: str):
 
     return os.path.exists(f"{path}/{filename}")
 
-def clone_package(url: str, branch: str, location: str = GIT_CLONE_PATH, overwrite: bool = True) -> bool:
+def clone_package(url: str, branch: str, location: str = GIT_CLONE_PATH, overwrite: bool = True) -> Tuple[bool, str]:
     """clone a package from a git repository"""
 
     # Remove the location if it exists and overwrite is True
@@ -192,9 +192,9 @@ def clone_package(url: str, branch: str, location: str = GIT_CLONE_PATH, overwri
     try:
         git.Repo.clone_from(url, location, branch=branch)
     except Exception as e:
-        return False
+        return False, str(e)
     
-    return True
+    return True, ""
 
 def remove_package(package_name: str) -> bool:
     """Remove a package by name."""
@@ -252,8 +252,9 @@ def install_git_package(url: str, branch: str, overwrite: bool = True) -> Tuple[
     """Install a package from a git repository"""
 
     # Clone the repository
-    if not clone_package(url, branch, overwrite=overwrite):
-        return False, "Failed to clone repository."
+    success, message = clone_package(url, branch, overwrite=overwrite)
+    if not success:
+        return False, f"Failed to clone repository. Reason: {message}"
     
     # Install the package
     status, message = install_package(GIT_CLONE_PATH, overwrite=overwrite)

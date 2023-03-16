@@ -8,7 +8,8 @@ import os
 import shutil
 import git
 
-from utils import load_packages, Package, generate_uuid, validate_metadata, check_for_file, check_for_metadata, clone_package, remove_package, install_package, generate_metadata
+import utils
+from utils import load_packages, Package, generate_uuid, validate_metadata, check_for_file, check_for_metadata, clone_package, remove_package, install_package
 from utils import DEFAULT_INSTALL_PATH, DEFAULT_PACKAGE_PATH, GIT_CLONE_PATH
 
 app = typer.Typer()
@@ -53,14 +54,14 @@ def generate_metadata_at(path: str = CURRENT_EXECUTION_PATH):
     hidden = typer.confirm("Hidden?", default=False)
     html_file = typer.prompt("Entry HTML file (default index.html)", default="index.html")
 
-    metadata = generate_metadata(
-        name=name,
-        author=author,
-        version=version,
-        description=description,
-        html_file=html_file,
-        hidden=hidden,
-        uuid=generate_uuid(name, author, version, description, html_file, hidden)
+    metadata = utils.generate_metadata(
+        name,
+        author,
+        version,
+        description,
+        html_file,
+        generate_uuid(name, author, version, description, html_file),
+        hidden,
     )
 
     typer.echo(f"{colorama.Fore.GREEN}\nMetadata generated! Here it is:{colorama.Style.RESET_ALL}")
