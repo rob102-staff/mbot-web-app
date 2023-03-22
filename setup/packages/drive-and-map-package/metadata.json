@@ -1,0 +1,8 @@
+{
+    "name": "Drive Control",
+    "author": "Franklin Volcic",
+    "version": "1.0",
+    "description": "A sample drive controller displaying usage of the DriveController component",
+    "html_file": "index.html",
+    "uuid": "89c0ecbd13c27502aa7b2587086a171dd09388af70cc99f288a936175c539f2d"
+}

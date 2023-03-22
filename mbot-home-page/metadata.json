@@ -1,0 +1,9 @@
+{
+    "name": "MBot Home Page",
+    "author": "Franklin Volcic",
+    "version": "1.0",
+    "description": "MBot home page",
+    "html_file": "index.html",
+    "uuid": "default",
+    "hidden": true
+}
