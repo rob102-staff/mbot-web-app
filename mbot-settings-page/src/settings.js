@@ -8,10 +8,11 @@ import 'reactjs-popup/dist/index.css';
 import LoadingSpinner from './loadingSpinner';
 import { Tooltip } from "@mui/material";
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import { createEndpoint } from './getEndpoint';
 // A settings react component
 
 function uninstallPackage(name, onSuccess, onError) {
-    fetch('http://localhost/api/packages/uninstall', {
+    fetch(createEndpoint("/api/packages/uninstall"), {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -39,7 +40,7 @@ function uninstallPackage(name, onSuccess, onError) {
 }
 
 function installFromGit(url, onSuccess, onError) {
-    fetch('http://localhost/api/packages/install', {
+    fetch(createEndpoint("/api/packages/install"), {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -90,7 +91,7 @@ const UninstallPackageButton = (props) => {
 };
 
 function fetchPackages(setPackages) {
-    fetch('http://localhost/api/packages/list')
+    fetch(createEndpoint('/api/packages/list'))
         .then(res => res.json())
         .then(data => {
             console.log(data.packages);

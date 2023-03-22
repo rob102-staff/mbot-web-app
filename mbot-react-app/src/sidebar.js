@@ -2,9 +2,11 @@ import React from 'react';
 import { slide as Menu } from 'react-burger-menu';
 import { useEffect, useState } from 'react';
 import './sidebar.css';
+import { createEndpoint } from './getEndpoint';
 
 function getPackages(setPackages) {
-    fetch('http://localhost/api/packages/list')
+    
+    fetch(createEndpoint("/api/packages/list", false))
         .then(res => res.json())
         .then(data => {
             setPackages(data.packages);
