@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "./static/css/main.317c5cb5.css",
+    "main.js": "./static/js/main.7896cfc7.js",
+    "static/js/787.0e431a69.chunk.js": "./static/js/787.0e431a69.chunk.js",
+    "static/media/MBot_spotlight_square.jpg": "./static/media/MBot_spotlight_square.08aaee19247feed6a266.jpg",
+    "static/media/logo.svg": "./static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "index.html": "./index.html",
+    "main.317c5cb5.css.map": "./static/css/main.317c5cb5.css.map",
+    "main.7896cfc7.js.map": "./static/js/main.7896cfc7.js.map",
+    "787.0e431a69.chunk.js.map": "./static/js/787.0e431a69.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.317c5cb5.css",
+    "static/js/main.7896cfc7.js"
+  ]
+}

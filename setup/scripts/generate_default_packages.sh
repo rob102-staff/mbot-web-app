@@ -37,3 +37,16 @@ mkdir setup/packages/drive-and-map-package
 
 cd mbot-drive-and-map-package/build
 cp -r * ../../setup/packages/drive-and-map-package
+
+echo "Building mbot-home-page"
+cd ../../
+cd mbot-home-page
+npm run build
+cp metadata.json build/metadata.json
+
+cd ../
+rm -rf setup/packages/home-page
+mkdir setup/packages/home-page
+
+cd mbot-home-page/build
+cp -r * ../../setup/packages/home-page
