@@ -55,4 +55,24 @@ mbot-cli install
 cd ~/tmp/mbot-install/mbot-web-app/setup/packages/home-page
 mbot-cli install
 
+# now we can setup the api
+# The api is run by the mbot user, which we must create
+# sudo useradd -r mbot # create a user without a home directory
+sudo mkdir /data/www/mbot/api
+sudo cp ~/tmp/mbot-install/mbot-web-app/setup/config/mbotapi.service /etc/systemd/system/mbotapi.service
+sudo cp ~/tmp/mbot-install/mbot-web-app/api/*.py /data/www/mbot/api
+sudo cp ~/tmp/mbot-install/mbot-web-app/api/requirements.txt /data/www/mbot/api
+#sudo mkdir /home/mbot
+#sudo chown mbot:mbot /home/mbot
+#cd /data/www/mbot/api && python3 -m pip install -r requirements.txt
+#sudo su mbot -c "cd /data/www/mbot/api && python3 -m pip install -r requirements.txt"
+cd ~/tmp/mbot-install/mbot-web-app/api && python3 -m pip install -r requirements.txt
+cd ~/tmp/mbot-install/mbot-web-app/setup/config
+python3 generate_service_file.py
+sudo cp mbotapi.service /etc/systemd/system/mbotapi.service
+
+sudo systemctl daemon-reload
+sudo systemctl enable mbotapi.service
+sudo systemctl start mbotapi.service
+
 sudo rm -r ~/tmp/mbot-install
