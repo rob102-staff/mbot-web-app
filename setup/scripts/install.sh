@@ -1,7 +1,7 @@
 sudo apt update
-sudo apt install nginx
-sudo apt install python3
-sudo apt install python3-pip
+sudo apt install nginx -y
+sudo apt install python3 -y
+sudo apt install python3-pip -y
 
 # remove default nginx config
 sudo rm /etc/nginx/sites-enabled/default
