@@ -34,7 +34,7 @@ export default props => {
                 onMouseOver={e => e.target.style.color = 'brown'}
                 onMouseOut={e => e.target.style.color = 'white'}
                 onClick={() => {
-                    props.setPackageURL("http://localhost/packages/default/index.html");
+                    props.setPackageURL(createEndpoint("/packages/default/index.html"));
                     document.getElementById("react-burger-menu-btn").click();
                 }}
                 >
@@ -48,8 +48,8 @@ export default props => {
                 key={index}
                 onClick={() => {
                     console.log(pkg.name);
-                    props.setPackageURL("http://localhost" + pkg.URI);
-                    console.log("http://localhost" + pkg.URI);
+                    props.setPackageURL(createEndpoint("") + pkg.URI);
+                    console.log(createEndpoint("") + pkg.URI);
                     document.getElementById("react-burger-menu-btn").click();
                 }}
                 style={{cursor: 'pointer'}}
