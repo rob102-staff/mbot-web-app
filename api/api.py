@@ -2,6 +2,8 @@ from flask import Flask
 from flask_cors import CORS
 from flask import request
 
+from waitress import serve
+
 from package_scanner import load_packages
 
 import storage_api
@@ -9,6 +11,10 @@ import package_utils
 
 app = Flask(__name__)
 CORS(app, support_credentials=True)
+
+@app.route('/ping', methods=['GET'])
+def ping():
+    return {"success": True}
 
 @app.route('/packages/list', methods=['GET'])
 def list_packages():
@@ -120,3 +126,6 @@ def create_store():
         return {"success": False, "error": "An error occured while creating the store"}
     
     return {"success": True}
+
+if __name__ == "__main__":
+    serve(app, host="0.0.0.0", port=5000)

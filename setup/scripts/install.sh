@@ -20,11 +20,11 @@ sudo mkdir -p /data/www/mbot/packages/
 
 # the directories for mbot git repositories
 sudo mkdir -p /data/mbot/git/
-
+sudo mkdir -p /data/www/mbot/git/
 sudo chmod -R a+rwx /data/www/mbot
+sudo chmod -R a+rwx /data/mbot
 
 echo "Setting up Nginx"
-sudo rm /etc/nginx/sites-enabled/default
 sudo rm /etc/nginx/nginx.conf
 sudo cp ~/tmp/mbot-install/mbot-web-app/setup/config/nginx.conf /etc/nginx/nginx.conf
 
@@ -33,14 +33,15 @@ sudo systemctl restart nginx
 # setup the mbot cli
 sudo mkdir /data/mbot/cli
 sudo cp ~/tmp/mbot-install/mbot-web-app/mbot-web-app-cli/*.py /data/mbot/cli
-sudo python3 -m pip install -r ~/tmp/mbot-install/mbot-web-app/mbot-web-app-cli/requirements.txt
+python3 -m pip install -r ~/tmp/mbot-install/mbot-web-app/mbot-web-app-cli/requirements.txt
 sudo chmod a+x /data/mbot/cli/cli.py
 sudo ln -s /data/mbot/cli/cli.py /usr/local/bin/mbot-cli
 
 echo "Installed the mbot cli. Execute 'mbot-cli --help' for information on how to use it."
 
 # add app-skeleton to mbot 
-sudo cp -r ~/tmp/mbot-install/mbot-web-app/setup/packages/app-skeleton /data/mbot/app-skeleton
+cd ~/tmp/mbot-install/mbot-web-app/setup/packages/app-skeleton
+sudo cp -r * /data/www/mbot/app-skeleton
 
 # add settings-page to mbot
 cd ~/tmp/mbot-install/mbot-web-app/setup/packages/settings-page
