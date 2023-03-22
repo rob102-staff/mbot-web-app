@@ -3,6 +3,9 @@ sudo apt install nginx
 sudo apt install python3
 sudo apt install python3-pip
 
+# remove default nginx config
+sudo rm /etc/nginx/sites-enabled/default
+
 # Create ~/tmp/mbot-install
 mkdir -p ~/tmp/mbot-install
 cd ~/tmp/mbot-install
