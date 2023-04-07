@@ -4,8 +4,6 @@ from flask import request
 
 from waitress import serve
 
-from package_scanner import load_packages
-
 import storage_api
 import package_utils
 
@@ -18,7 +16,7 @@ def ping():
 
 @app.route('/packages/list', methods=['GET'])
 def list_packages():
-    packages = load_packages()
+    packages = package_utils.load_packages()
     return {"packages": [package.as_dict() for package in packages]}
 
 @app.route('/packages/uninstall', methods=['POST'])

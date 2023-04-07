@@ -23,14 +23,13 @@ def _load_packages(path: str):
 
         # skip if not a folder
         if not os.path.isdir(path + "/" + folder):
-            print("skipping " + folder + " because it is not a folder")
             continue
 
         package = Package(path + "/" + folder)
         if package.is_valid():
             packages.append(package)
         else:
-            print("skipping " + folder + " because it is not valid")
+            print("Package not valid")
 
     return packages 
 
@@ -50,6 +49,8 @@ class Package:
         self.h = self._hash()
         self.uuid = self.h
         self.hidden = self.metadata["hidden"]
+        self.remote_package = self.metadata["remote_package"]
+        self.remote_url = self.metadata["remote_url"]
 
     def as_dict(self):
         return {
@@ -60,7 +61,9 @@ class Package:
             "html_file": self.html_file,
             "uuid": self.h,
             "URI": "/packages/" + self.h + "/" + self.html_file,
-            "hidden": self.hidden
+            "hidden": self.hidden,
+            "remote_package": self.remote_package,
+            "remote_url": self.remote_url
         }
 
     def full_path(self):
@@ -91,7 +94,7 @@ class Package:
         return self.html_file
     
     def is_valid(self):
-        return self.html_file != ""
+        return self.html_file != "" or self.remote_package == True
 
     def _hash(self):
         # the hash is equal to the name of the folder containing the package
@@ -134,6 +137,12 @@ class Package:
     
         if "hidden" not in self.metadata:
             self.metadata["hidden"] = False
+        
+        if "remote_package" not in self.metadata:
+            self.metadata["remote_package"] = False
+        
+        if "remote_url" not in self.metadata:
+            self.metadata["remote_url"] = ""
 
 def generate_uuid(name, author, version, description, html_file):
     # generate a UUID
@@ -177,7 +186,7 @@ def check_for_file(filename: str, path: str):
 
     return os.path.exists(f"{path}/{filename}")
 
-def clone_package(url: str, branch: str, location: str = GIT_CLONE_PATH, overwrite: bool = True) -> bool:
+def clone_package(url: str, branch: str, location: str = GIT_CLONE_PATH, overwrite: bool = True) -> Tuple[bool, str]:
     """clone a package from a git repository"""
 
     # Remove the location if it exists and overwrite is True
@@ -192,9 +201,9 @@ def clone_package(url: str, branch: str, location: str = GIT_CLONE_PATH, overwri
     try:
         git.Repo.clone_from(url, location, branch=branch)
     except Exception as e:
-        return False
+        return False, str(e)
     
-    return True
+    return True, ""
 
 def remove_package(package_name: str) -> bool:
     """Remove a package by name."""
@@ -230,7 +239,15 @@ def install_package(path: str, overwrite: bool = True) -> Tuple[bool, str]:
     shutil.copytree(path, DEFAULT_PACKAGE_PATH + "/" + metadata["uuid"])
     return True, "Package installed successfully."
 
-def generate_metadata(name: str, author: str, version: str, description: str, html_file: str, uuid: str, hidden: bool = False):
+def generate_metadata(name: str, 
+                      author: str, 
+                      version: str, 
+                      description: str, 
+                      html_file: str, 
+                      uuid: str, 
+                      remote_package: bool,
+                      remote_url: str, 
+                      hidden: bool = False):
     # create a metadata.json file in the current directory
     # the metadata file contains the name, author, version, description, and entry html file of the package
     # the metadata file is used to validate the package and to display information about the package
@@ -243,7 +260,9 @@ def generate_metadata(name: str, author: str, version: str, description: str, ht
         "description": description,
         "html_file": html_file,
         "uuid": uuid,
-        "hidden": hidden
+        "hidden": hidden,
+        "remote_package": remote_package,
+        "remote_url": remote_url
     }
 
     return metadata
@@ -252,8 +271,9 @@ def install_git_package(url: str, branch: str, overwrite: bool = True) -> Tuple[
     """Install a package from a git repository"""
 
     # Clone the repository
-    if not clone_package(url, branch, overwrite=overwrite):
-        return False, "Failed to clone repository."
+    success, message = clone_package(url, branch, overwrite=overwrite)
+    if not success:
+        return False, f"Failed to clone repository. Reason: {message}"
     
     # Install the package
     status, message = install_package(GIT_CLONE_PATH, overwrite=overwrite)

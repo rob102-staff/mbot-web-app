@@ -53,16 +53,21 @@ def generate_metadata_at(path: str = CURRENT_EXECUTION_PATH):
     description = typer.prompt("Description")
     hidden = typer.confirm("Hidden?", default=False)
     html_file = typer.prompt("Entry HTML file (default index.html)", default="index.html")
+    remote_package = typer.confirm("Remote package?", default=False)
+    remote_url = "" 
+    if remote_package:
+        remote_url = typer.prompt("Remote URL")
 
     metadata = utils.generate_metadata(
-        name,
-        author,
-        version,
-        description,
-        html_file,
-        generate_uuid(name, author, version, description, html_file),
-        hidden,
-    )
+        name=name,
+        author=author,
+        version=version,
+        description=description,
+        html_file=html_file,
+        uuid=generate_uuid(name, author, version, description, html_file),
+        hidden=hidden,
+        remote_package=remote_package,
+        remote_url=remote_url)
 
     typer.echo(f"{colorama.Fore.GREEN}\nMetadata generated! Here it is:{colorama.Style.RESET_ALL}")
     typer.echo(metadata)
@@ -167,7 +172,7 @@ def shake_unusable():
     typer.echo(f"{colorama.Fore.GREEN}{colorama.Style.BRIGHT}Done!{colorama.Style.RESET_ALL}")
 
 @app.command()
-def add_remote_package(url, from_git=True, branch="deploy"):
+def install_remote_package(url, from_git=True, branch="deploy"):
     """
     Add a remote package to the packages directory.
     If the package is from git, it will be cloned. Otherwise, a remote package will be created.
@@ -182,7 +187,7 @@ def install_package_from_git(url, branch="deploy"):
     """Clone the git repo into /data/mbot/tmp/ and then run the install command"""
 
     # attempt to clone the repo
-    success = clone_package(url, branch)
+    success, _ = clone_package(url, branch)
 
     if not success:
         typer.echo(f"{colorama.Fore.RED}Failed to install git package!{colorama.Style.RESET_ALL}")
@@ -222,6 +227,47 @@ def install_package_from_git(url, branch="deploy"):
     # delete the tmp folder
     shutil.rmtree(GIT_CLONE_PATH)
     typer.echo(f"{colorama.Fore.GREEN}{colorama.Style.BRIGHT}Package installed from git!{colorama.Style.RESET_ALL}")
+
+@app.command()
+def add_remote_package():
+    """Add a remote package to the packages directory"""
+    
+    remote_package_name = typer.prompt("Enter the name of the remote package")
+    remote_url = typer.prompt("Enter the URL of the remote package")
+
+    metadata = utils.generate_metadata(
+        name=remote_package_name, 
+        author="Unknown",
+        description="",
+        remote_url=remote_url,
+        html_file="",
+        remote_package=True,
+        version="1.0.0",
+        hidden=False,
+        uuid=utils.generate_uuid(remote_url, "", "", "", ""))
+
+    # remove tmp folder if it exists
+    # if os.path.exists(DEFAULT_INSTALL_PATH + "/tmp/remote-package"):
+    #     shutil.rmtree(DEFAULT_INSTALL_PATH + "/tmp/remote-package")
+
+    # create a tmp folder
+    os.makedirs(GIT_CLONE_PATH + "/tmp/remote-package", exist_ok=True)
+
+    # save the metadata to the tmp folder
+    with open(GIT_CLONE_PATH + "/tmp/remote-package/metadata.json", "w") as f:
+        f.write(json.dumps(metadata, indent=4))
+    
+    # install the package
+    success, _ = install_package(GIT_CLONE_PATH + "/tmp/remote-package", overwrite=True)
+
+    if not success:
+        typer.echo(f"{colorama.Fore.RED}Failed to install remote package!{colorama.Style.RESET_ALL}")
+        return
+
+    # remove tmp folder
+    #shutil.rmtree(GIT_CLONE_PATH + "/tmp/remote-package")
+
+    typer.echo(f"{colorama.Fore.GREEN}{colorama.Style.BRIGHT}Remote package installed!{colorama.Style.RESET_ALL}")
 
 
 def install_package_from_url(url):

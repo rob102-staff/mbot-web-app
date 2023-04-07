@@ -5,7 +5,7 @@ import './sidebar.css';
 import { createEndpoint } from './getEndpoint';
 
 function getPackages(setPackages) {
-    
+
     fetch(createEndpoint("/api/packages/list", false))
         .then(res => res.json())
         .then(data => {
@@ -29,32 +29,35 @@ export default props => {
     }
 
     return (
-        <Menu onStateChange={() => {getPackages(setPackages);}}>
-            <h2 className="menu-item" style={{cursor: 'pointer'}}
+        <Menu onStateChange={() => { getPackages(setPackages); }}>
+            <h2 className="menu-item" style={{ cursor: 'pointer' }}
                 onMouseOver={e => e.target.style.color = 'brown'}
                 onMouseOut={e => e.target.style.color = 'white'}
                 onClick={() => {
                     props.setPackageURL(createEndpoint("/packages/default/index.html"));
                     document.getElementById("react-burger-menu-btn").click();
                 }}
-                >
+            >
                 MBot home
             </h2>
             {packages.map((pkg, index) => {
                 if (pkg.uuid === "default") {
                     return null;
                 }
-                return <h2 className="menu-item" 
-                key={index}
-                onClick={() => {
-                    console.log(pkg.name);
-                    props.setPackageURL(createEndpoint("") + pkg.URI);
-                    console.log(createEndpoint("") + pkg.URI);
-                    document.getElementById("react-burger-menu-btn").click();
-                }}
-                style={{cursor: 'pointer'}}
-                onMouseOver={e => e.target.style.color = 'brown'}
-                onMouseOut={e => e.target.style.color = 'white'}>
+                return <h2 className="menu-item"
+                    key={index}
+                    onClick={() => {
+                        console.log(pkg.name);
+                        if (pkg.remote_package === true)
+                            props.setPackageURL(pkg.remote_url);
+                        else
+                            props.setPackageURL(createEndpoint("") + pkg.URI);
+                        console.log(createEndpoint("") + pkg.URI);
+                        document.getElementById("react-burger-menu-btn").click();
+                    }}
+                    style={{ cursor: 'pointer' }}
+                    onMouseOver={e => e.target.style.color = 'brown'}
+                    onMouseOut={e => e.target.style.color = 'white'}>
                     {pkg.name}
                 </h2>
             })}
