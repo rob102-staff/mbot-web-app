@@ -1,4 +1,8 @@
 # MBot Web Application
+<p align="center">
+ <img src="https://user-images.githubusercontent.com/59806465/232891073-7a051d5c-3e9a-4af7-a9cc-f17ffdaa3d41.png">
+</p>
+
 
 ## This page contains the current mbot web application
 
