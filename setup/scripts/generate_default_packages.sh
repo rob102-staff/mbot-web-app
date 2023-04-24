@@ -1,19 +1,14 @@
 
-# build mbot-home-page
-cd ../../mbot-react-app
-echo "Building mbot-home-page"
+# build the app-base
+echo "Building app-base"
+cd ../../app
 npm install
 npm run build
-
-cd ../
-rm -rf setup/packages/app-skeleton
-mkdir setup/packages/app-skeleton
-
-cd mbot-react-app/build
+cd build
 cp -r * ../../setup/packages/app-skeleton
 
 echo "Building mbot-settings-page"
-cd ../../
+cd ../../packages/default/mbot-settings-page
 cd mbot-settings-page
 npm install
 npm run build
