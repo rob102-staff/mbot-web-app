@@ -222,7 +222,7 @@ def install_package_from_git(url, branch="deploy"):
     shutil.rmtree(os.path.join(GIT_CLONE_PATH, ".git"))
 
     # install the package
-    install(GIT_CLONE_PATH)
+    install_package(GIT_CLONE_PATH)
 
     # delete the tmp folder
     shutil.rmtree(GIT_CLONE_PATH)
