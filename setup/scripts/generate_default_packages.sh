@@ -2,8 +2,8 @@
 # build mbot-home-page
 cd ../../mbot-react-app
 echo "Building mbot-home-page"
+npm install
 npm run build
-cp metadata.json build/metadata.json
 
 cd ../
 rm -rf setup/packages/app-skeleton
@@ -15,6 +15,7 @@ cp -r * ../../setup/packages/app-skeleton
 echo "Building mbot-settings-page"
 cd ../../
 cd mbot-settings-page
+npm install
 npm run build
 cp metadata.json build/metadata.json
 
@@ -28,6 +29,7 @@ cp -r * ../../setup/packages/settings-page
 echo "Building mbot-drive-and-map-package"
 cd ../../
 cd mbot-drive-and-map-package
+npm install
 npm run build
 cp metadata.json build/metadata.json
 
@@ -41,6 +43,7 @@ cp -r * ../../setup/packages/drive-and-map-package
 echo "Building mbot-home-page"
 cd ../../
 cd mbot-home-page
+npm install
 npm run build
 cp metadata.json build/metadata.json
 
